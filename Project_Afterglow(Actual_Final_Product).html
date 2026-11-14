@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>PROJECT AFTERGLOW — Machines left among the stars</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{color-scheme:dark;--bg:#040916;--bg2:#08122b;--navy:#0c1b44;--ice:#8fd8ff;--sky:#38bdf8;--ink:#f2f8ff;--mute:#8da6cf;--line:rgba(143,216,255,.18);--glass:rgba(12,27,68,.55);--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:70px;height:auto}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;background:repeating-linear-gradient(0deg,rgba(143,216,255,.025) 0 1px,transparent 1px 3px);mix-blend-mode:screen}
+#glow{position:fixed;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(56,189,248,.14),transparent 65%);transform:translate(-50%,-50%);left:50%;top:30%}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:4px;padding:12px 22px;background:rgba(4,9,22,.6);backdrop-filter:blur(18px) saturate(1.6);border-bottom:1px solid var(--line)}
+body:after{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);z-index:21;background:rgba(4,9,22,.6);backdrop-filter:blur(18px)}
+nav b{font:700 13px var(--mono);letter-spacing:.3em;margin-right:auto}
+nav a{color:var(--mute);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:99px;transition:.3s}
+nav a:hover{color:var(--ink);background:var(--line)}
+#prog{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--sky),#fff);z-index:60}
+section{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:110px 22px}
+.tag{font:12px var(--mono);letter-spacing:.28em;color:var(--sky);text-transform:uppercase;margin-bottom:14px}
+h2{font-size:clamp(34px,6vw,64px);line-height:1.04;letter-spacing:-.03em;margin:0 0 18px;font-weight:700;background:linear-gradient(180deg,#fff,#8fd8ff 120%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--mute);font-size:19px;max-width:620px}
+.rv{opacity:0;transform:translateY(40px) scale(.98);filter:blur(8px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1),filter 1s}
+.rv.in{opacity:1;transform:none;filter:none}
+.hero{min-height:100vh;display:grid;place-items:center;text-align:center;padding-top:60px;overflow:hidden}
+#stars{position:absolute;inset:0;width:100%;height:100%}
+.stage{position:relative;width:min(520px,86vw);aspect-ratio:1;margin:0 auto -150px}
+.moon{position:absolute;inset:16%;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0,#dbeaff 18%,#8fa9cf 52%,#27406e 82%,#0a1530 100%);box-shadow:0 0 90px rgba(56,189,248,.45),inset -40px -30px 80px rgba(4,9,22,.85);animation:float 9s ease-in-out infinite}
+.moon i{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(10,21,48,.05),rgba(10,21,48,.35));box-shadow:inset 2px 3px 6px rgba(10,21,48,.45)}
+.ring{position:absolute;inset:0;width:100%;height:100%}
+.r1{animation:spin 60s linear infinite}.r2{animation:spin 90s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{50%{transform:translateY(-14px)}}
+.hero h1{position:relative;font-size:clamp(54px,13vw,170px);line-height:.9;letter-spacing:-.05em;margin:0;font-weight:800;background:linear-gradient(100deg,#fff 20%,#8fd8ff 45%,#fff 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
+@keyframes shine{to{background-position:-220% 0}}
+.hero p{position:relative;max-width:560px;margin:18px auto 28px;color:var(--mute);font-size:20px}
+.btn{display:inline-block;cursor:pointer;font:600 15px inherit;font-family:inherit;color:#04101f;background:linear-gradient(180deg,#fff,#8fd8ff);border:0;border-radius:99px;padding:13px 28px;text-decoration:none;box-shadow:0 0 40px rgba(56,189,248,.4);transition:.3s}
+.btn:hover{transform:translateY(-2px) scale(1.03)}
+.hud{position:absolute;font:11px/1.8 var(--mono);color:var(--ice);letter-spacing:.14em;opacity:.8}
+.hud.a{left:22px;bottom:90px}.hud.b{right:22px;bottom:90px;text-align:right}
+@media(max-width:700px){.hud{display:none}}
+.ticker{overflow:hidden;border-block:1px solid var(--line);background:var(--bg2);position:relative;z-index:1}
+.ticker div{display:flex;gap:56px;width:max-content;padding:14px 0;font:12px var(--mono);letter-spacing:.3em;color:var(--mute);animation:tick 40s linear infinite}
+@keyframes tick{to{transform:translateX(-50%)}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+.panel,.stat{background:var(--glass);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(12px);position:relative}
+.stat{padding:24px 18px}
+.stat b{display:block;font-size:46px;letter-spacing:-.03em;color:#fff}
+.stat span{font:11px var(--mono);letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
+.panel:before,.panel:after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--sky);opacity:.8}
+.panel:before{top:10px;left:10px;border-right:0;border-bottom:0}.panel:after{bottom:10px;right:10px;border-left:0;border-top:0}
+.tabs{display:inline-flex;padding:4px;border:1px solid var(--line);border-radius:99px;background:var(--glass);margin:22px 0;flex-wrap:wrap;gap:4px}
+.tabs button{border:0;background:none;color:var(--mute);font:600 12px var(--mono);letter-spacing:.12em;padding:9px 18px;border-radius:99px;cursor:pointer;transition:.3s}
+.tabs button.on{background:linear-gradient(180deg,#fff,#8fd8ff);color:#04101f}
+.rail{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;perspective:900px}
+@media(max-width:860px){.rail{grid-template-columns:1fr 1fr}}
+.card{cursor:pointer;text-align:left;color:var(--ink);font:inherit;padding:18px;transform:rotateX(var(--rx,0)) rotateY(var(--ry,0));transition:transform .2s,border-color .3s,box-shadow .3s}
+.card small{font:11px var(--mono);letter-spacing:.2em;color:var(--sky)}
+.card h4{margin:6px 0 2px;font-size:17px;line-height:1.25}
+.card span{font-size:13px;color:var(--mute)}
+.card.on{border-color:var(--ice);box-shadow:0 0 50px rgba(56,189,248,.28),inset 0 0 30px rgba(56,189,248,.1)}
+.kid-story-box{margin-top:10px;padding:12px;background:rgba(56,189,248,0.08);border:1px dashed var(--sky);border-radius:12px;font-size:14px;color:var(--ice);display:none;}
+.kid-story-box.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.console{display:grid;grid-template-columns:1.1fr 1fr;gap:26px;padding:28px;margin-top:16px}
+@media(max-width:760px){.console{grid-template-columns:1fr}}
+.bp{background:radial-gradient(circle at 50% 50%,rgba(56,189,248,.12),transparent 70%),linear-gradient(var(--line) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/22px 22px,var(--bg2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.bp svg{width:100%;display:block}
+.bp .s{fill:none;stroke:var(--ice);stroke-width:1.6;stroke-linejoin:round}
+.bp .f{fill:rgba(56,189,248,.12)}
+.bp .d{stroke-dasharray:4 4;stroke:var(--mute);animation:dash 2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-16}}
+.rot{transform-origin:100px 40px;animation:rot .35s linear infinite}
+@keyframes rot{50%{transform:scaleX(.2)}}
+.console h3{font-size:30px;line-height:1.1;margin:0 0 6px;letter-spacing:-.02em}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.spec div{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.spec small{display:block;font:10px var(--mono);letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
+.spec b{font-size:15px}
+.pulse{width:100%;height:46px}
+.pulse polyline{fill:none;stroke:var(--sky);stroke-width:2;stroke-dasharray:400;stroke-dashoffset:400;animation:draw 2.4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.links a{color:var(--ice);font:12px var(--mono);letter-spacing:.12em;margin-right:16px;text-decoration:none;border-bottom:1px solid var(--line)}
+.tl{position:relative;margin-top:40px;padding-left:34px}
+.tl:before{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--line)}
+.tl i{position:absolute;left:8px;top:0;width:2px;height:var(--p,0%);background:linear-gradient(var(--sky),#fff);box-shadow:0 0 14px var(--sky)}
+.tl div{position:relative;margin-bottom:34px}
+.tl div:before{content:"";position:absolute;left:-31px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--sky);box-shadow:0 0 14px var(--sky)}
+.tl b{font:13px var(--mono);letter-spacing:.2em;color:var(--sky);display:block}
+.tl p{margin:2px 0 0;font-size:20px}
+.games{display:grid;grid-template-columns:1fr;gap:28px;margin-top:34px}
+.game{padding:28px}.game h3{margin:0 0 10px;font-size:26px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.chip{background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:8px 15px;font:inherit;font-size:14px;cursor:pointer;transition:.25s;text-align:left}
+.chip:hover{border-color:var(--ice)}.chip.on{background:var(--ice);color:#04101f;border-color:var(--ice)}
+.chip.good{background:rgba(74,222,128,.2);border-color:#4ade80;color:#bbf7d0}
+.chip.bad{background:rgba(248,113,113,.2);border-color:#f87171;color:#fecaca}
+.lbl{font:11px var(--mono);letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
+.story{margin-top:14px;padding:16px;border-radius:14px;background:var(--bg2);border:1px solid var(--line);min-height:84px;font-size:16px}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin:10px 0 14px}
+.q-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+/* Memory Match Stilleri */
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;perspective:700px;margin-top:10px}
+.mc{aspect-ratio:1;border:0;background:none;padding:0;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.8,.3,1)}
+.mc.up,.mc.ok{transform:rotateY(180deg)}
+.mc span{position:absolute;inset:0;display:grid;place-items:center;border-radius:14px;backface-visibility:hidden;border:1px solid var(--line);font-size:36px}
+.mc .fr{background:linear-gradient(145deg,var(--navy),var(--bg2));font:12px var(--mono);color:var(--sky)}
+.mc .bk{transform:rotateY(180deg);background:linear-gradient(145deg,#fff,#8fd8ff)}
+.mc.ok .bk{box-shadow:0 0 30px var(--sky)}
+
+/* Space Satellite Orijinal Tasarım & Mobil Uyum Stilleri */
+.font-orbitron { font-family: 'Orbitron', sans-serif; }
+.space-game-wrapper {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    background: radial-gradient(circle at center, #0f172a 0%, #050714 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 14px;
+    border: 1px solid var(--line);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+}
+.space-game-wrapper canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.space-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(147, 197, 253, 0.4);
+}
+.space-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+    background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+}
+.glass-panel-game {
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+footer{position:relative;z-index:1;text-align:center;padding:70px 22px 90px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+footer b{display:block;font-size:30px;letter-spacing:.3em;color:#fff;margin-bottom:8px}
+footer a{color:var(--ice)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none;filter:none}}
+</style>
+</head>
+<body>
+<div id="prog"></div><div id="glow"></div>
+<nav><b>PROJECT AFTERGLOW</b><a href="#guide">Archive</a><a href="#timeline">Timeline</a><a href="#play">Play</a><a href="#about">About</a></nav>
+
+<header class="hero" id="top">
+<canvas id="stars"></canvas>
+<div>
+<div class="stage">
+<svg class="ring r1" viewBox="0 0 400 400"><circle cx="200" cy="200" r="196" fill="none" stroke="#8fd8ff" stroke-opacity=".35" stroke-dasharray="1 7"/><circle cx="200" cy="4" r="5" fill="#38bdf8"/><g stroke="#8fd8ff" stroke-opacity=".5"><path d="M200 0v14M200 386v14M0 200h14M386 200h14"/></g></svg>
+<svg class="ring r2" viewBox="0 0 400 400"><circle cx="200" cy="200" r="170" fill="none" stroke="#fff" stroke-opacity=".18"/><circle cx="30" cy="200" r="4" fill="#fff"/></svg>
+<div class="moon"><i style="left:18%;top:24%;width:20%;height:20%"></i><i style="left:52%;top:18%;width:12%;height:12%"></i><i style="left:44%;top:52%;width:26%;height:26%"></i><i style="left:20%;top:62%;width:10%;height:10%"></i><i style="left:70%;top:60%;width:14%;height:14%"></i></div>
+</div>
+<div class="tag" style="position:relative">NASA Space Apps Challenge 2026</div>
+<h1>PROJECT AFTERGLOW</h1>
+<p>Everything we left behind in space is still there. This is its story.</p>
+<a class="btn" href="#guide">Explore the archive</a>
+</div>
+<div class="hud a">MET <span id="met">00:00:00</span><br>LAT 00.67°N · LON 23.47°E</div>
+<div class="hud b">LINK: ARCHIVE<br>SIGNAL: NOMINAL</div>
+</header>
+
+<div class="ticker"><div id="tk"></div></div>
+
+<section>
+<div class="tag rv">The mission</div>
+<h2 class="rv">Every machine had a last day.</h2>
+<p class="lead rv">Rovers, landers and a tiny helicopter did their jobs, then went quiet. Afterglow tells their stories through hardware, data and imagination.</p>
+<div class="stats">
+<div class="stat rv"><b data-n="72">0</b><span>Ingenuity flights</span></div>
+<div class="stat rv"><b data-n="14">0</b><span>Years Opportunity worked</span></div>
+<div class="stat rv"><b data-n="23">0</b><span>Objects in the archive</span></div>
+<div class="stat rv"><b data-n="1958">0</b><span>Oldest satellite in orbit</span></div>
+</div>
+</section>
+
+<section id="guide">
+<div class="tag rv">Interactive guide</div>
+<h2 class="rv">The archive.</h2>
+<p class="lead rv">Select a destination and a machine to inspect its blueprint, mission file, and NASA media. <span style="color:var(--sky); font-size:14px; display:block; margin-top:6px;">💡 Tip: Click on machine names or text descriptions to read short stories for young explorers!</span></p>
+<div class="tabs rv">
+  <button class="on" data-w="moon">MOON (8)</button>
+  <button data-w="mars">MARS (7)</button>
+  <button data-w="orbit">ORBIT (4)</button>
+  <button data-w="deep">DEEP SPACE (4)</button>
+</div>
+<div class="rail" id="rail"></div>
+<div class="panel console" id="con"></div>
+</section>
+
+<section id="timeline">
+<div class="tag rv">Chronology</div>
+<h2 class="rv">Sixty years of leaving things.</h2>
+<div class="tl" id="tl"><i></i>
+<div class="rv"><b>1958</b><p>Vanguard 1 enters orbit; it is still there today.</p></div>
+<div class="rv"><b>1967–69</b><p>Surveyor 3 lands, Apollo 11 follows, and Apollo 10’s lunar module “Snoopy” is sent into solar orbit.</p></div>
+<div class="rv"><b>1971–72</b><p>Three lunar rovers and several ALSEP science stations are left on the Moon.</p></div>
+<div class="rv"><b>1972–77</b><p>Pioneer 10 & 11 and Voyager 1 & 2 launch carrying plaques and Golden Records toward the stars.</p></div>
+<div class="rv"><b>1997–2008</b><p>Sojourner, Spirit, Opportunity, and Phoenix explore Mars.</p></div>
+<div class="rv"><b>2012–24</b><p>Both Voyagers enter interstellar space; InSight finishes, Perseverance lays a sample depot, and Ingenuity completes 72 flights.</p></div>
+</div>
+</section>
+
+<section id="play">
+<div class="tag rv">For young explorers</div>
+<h2 class="rv">Play.</h2>
+<p class="lead rv">Test your knowledge with our 30-question space quiz, pilot the satellite through asteroids, and train your memory!</p>
+<div class="games">
+  
+  <!-- 1. Quiz Paneli -->
+  <div class="panel game rv">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap">
+      <h3>Afterglow Quiz · 30 Questions</h3>
+      <span class="lbl" id="quiz-score">Score: 0 / 30</span>
+    </div>
+    <div id="quiz-container">
+      <div id="quiz-question" style="font-size:18px; margin:10px 0 12px; font-weight:600;">Loading question...</div>
+      <div class="q-opts" id="quiz-options"></div>
+      <div class="story" id="quiz-result">Select an option above to answer.</div>
+      <div class="q-nav">
+        <button class="chip" id="q-prev">← Previous</button>
+        <button class="chip" id="q-reset">Restart Quiz</button>
+        <button class="btn" id="q-next" style="padding:9px 20px;font-size:14px">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Space Satellite Oyunu Paneli -->
+  <div class="panel game rv">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap">
+      <h3>Space Satellite Adventure</h3>
+      <span class="lbl" id="sat-best-lbl">Best: <b id="hudBestScore" style="color:#fff">0</b></span>
+    </div>
+    <div style="margin-top:4px; display:flex; flex-direction:column; gap:2px;">
+      <p class="lbl" style="margin:0;">navigate safely through the asteroid belt by tapping the screen or pressing space</p>
+      <span style="font-size:11px; color:var(--mute); opacity:0.75; font-style:italic;">Not suitable for iOS</span>
+    </div>
+    
+    <div class="space-game-wrapper" id="game-container">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- HUD -->
+      <div id="hud" class="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none z-10">
+        <div class="glass-panel-game px-3 py-1.5 rounded-xl flex items-center gap-2 text-blue-200">
+          <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          <span class="text-xs uppercase text-blue-300">Best:</span>
+          <span id="hudBestScoreBadge" class="font-orbitron font-bold text-sm text-white">0</span>
+        </div>
+
+        <div id="liveScoreContainer" class="hidden flex-col items-center">
+          <span id="liveScore" class="font-orbitron font-black text-4xl sm:text-5xl text-white drop-shadow-[0_4px_12px_rgba(59,130,246,0.8)]">0</span>
+        </div>
+
+        <button id="soundToggleBtn" aria-label="Toggle Sound" class="pointer-events-auto glass-panel-game p-2.5 rounded-xl text-blue-200 hover:text-white transition-colors cursor-pointer">
+          <svg id="soundOnIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          <svg id="soundOffIcon" class="w-5 h-5 hidden text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+        </button>
+      </div>
+
+      <!-- Start Ekranı -->
+      <div id="startScreen" class="absolute inset-0 flex items-center justify-center p-4 z-20">
+        <div class="glass-panel-game max-w-sm w-full p-6 rounded-3xl text-center flex flex-col items-center shadow-2xl">
+          <div class="w-16 h-16 mb-3 rounded-2xl bg-blue-500/10 border border-blue-400/30 flex items-center justify-center">
+            <svg class="w-8 h-8 text-blue-400" viewBox="0 0 64 64" fill="none"><rect x="24" y="20" width="16" height="24" rx="4" fill="#E2E8F0" stroke="#64748B" stroke-width="2"/><circle cx="32" cy="32" r="4" fill="#38BDF8"/><line x1="32" y1="20" x2="32" y2="10" stroke="#CBD5E1" stroke-width="2"/><circle cx="32" cy="8" r="3" fill="#F59E0B"/></svg>
+          </div>
+          <h3 class="font-orbitron font-black text-2xl text-white tracking-wider mb-2">SPACE SATELLITE</h3>
+          <p class="text-blue-200/90 text-xs sm:text-sm mb-6">Navigate safely through the asteroid belt!</p>
+          <button id="startBtn" class="space-btn w-full py-3.5 px-6 rounded-2xl font-orbitron font-bold text-sm text-white tracking-widest uppercase cursor-pointer">Start Mission</button>
+        </div>
+      </div>
+
+      <!-- Game Over Ekranı -->
+      <div id="gameOverScreen" class="hidden absolute inset-0 flex items-center justify-center p-4 z-20 bg-slate-950/50 backdrop-blur-sm">
+        <div class="glass-panel-game max-w-sm w-full p-6 rounded-3xl text-center flex flex-col items-center">
+          <h3 class="font-orbitron font-black text-2xl text-white mb-1">Mission Failed</h3>
+          <p id="newRecordBadge" class="hidden text-xs font-orbitron font-bold uppercase tracking-widest text-amber-400 bg-amber-500/20 border border-amber-400/40 px-3 py-1 rounded-full mb-3">★ New Record! ★</p>
+          <p class="text-slate-400 text-xs mb-4">The satellite sustained heavy asteroid damage.</p>
+          <div class="grid grid-cols-2 gap-3 w-full mb-6">
+            <div class="bg-slate-900/80 border border-slate-700/80 p-3 rounded-xl">
+              <span class="block text-[10px] uppercase text-slate-400 mb-1">Score</span>
+              <span id="finalScore" class="font-orbitron font-bold text-2xl text-white">0</span>
+            </div>
+            <div class="bg-slate-900/80 border border-amber-500/30 p-3 rounded-xl">
+              <span class="block text-[10px] uppercase text-amber-400 mb-1">Best</span>
+              <span id="finalBestScore" class="font-orbitron font-bold text-2xl text-amber-400">0</span>
+            </div>
+          </div>
+          <button id="restartBtn" class="space-btn w-full py-3.5 px-6 rounded-2xl font-orbitron font-bold text-sm text-white tracking-widest uppercase cursor-pointer">Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Memory Match Paneli -->
+  <div class="panel game rv">
+    <h3>Memory Match</h3>
+    <p class="lbl">Moves <b id="mv" style="color:#fff">0</b></p>
+    <div class="mem" id="mem"></div>
+    <button class="chip" id="rs" style="margin-top:14px">Restart</button>
+  </div>
+
+</div>
+</section>
+
+<section id="about">
+<div class="tag rv">About</div>
+<h2 class="rv">Not forgotten.</h2>
+<p class="lead rv">Built for the NASA Space Apps Challenge 2026 storytelling challenge on discarded NASA equipment. Covering objects on the Moon, Mars, Earth orbit, solar orbit, and interstellar space. Verify dates and figures against official NASA sources before publishing.</p>
+</section>
+<footer><b>PROJECT AFTERGLOW</b>
+<div style="max-width:800px; margin:16px auto; text-align:left; font-size:14px; font-weight:normal; color:var(--mute); line-height:1.6;">
+  <b style="color:var(--ink); font-size:15px; font-weight:bold; letter-spacing:.1em; display:block; margin-bottom:6px;">References & Credits:</b>
+  <ul style="margin:0; padding-left:18px;">
+    <li>NASA Space Science Data Coordinated Archive (NSSDCA): Mission logs, landing site coordinates, and artifact status for Apollo, Surveyor, Viking, Pioneer, and Voyager spacecraft.</li>
+    <li>NASA Mars Exploration Program & Perseverance Rover Operations: Surface deployment logs for Sojourner, Spirit, Opportunity, Phoenix, InSight, Ingenuity, and the Mars Sample Depot.</li>
+    <li>NASA Image and Video Library: Official historical photographs, blueprints, and multimedia records (<a href="https://images.nasa.gov" target="_blank" rel="noopener" style="color:var(--ice);">images.nasa.gov</a>).</li>
+    <li>Jet Propulsion Laboratory (JPL): Interstellar trajectories, deep space ephemerides, and telemetry archives for Pioneer 10/11, Voyager 1/2, and New Horizons.</li>
+    <li>International Laser Ranging Service (ILRS): Laser retroreflector ranging data and LAGEOS geodynamic tracking parameters.</li>
+  </ul>
+</div>
+Everything we left behind in space is still there. Credit every image. <br>
+<span style="display:block; margin-top:10px; font:10px var(--mono); font-weight:300; letter-spacing:.2em; color:var(--sky);">By: The Cosmos Team</span>
+</footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const T={
+  rover:'<rect class="s f" x="55" y="70" width="90" height="22" rx="5"/><path class="s" d="M100 70V30M88 30h24"/><circle class="s f" cx="100" cy="26" r="7"/><path class="s" d="M60 70L40 50M40 50h22"/><circle class="s f" cx="65" cy="106" r="14"/><circle class="s f" cx="135" cy="106" r="14"/><circle class="s" cx="100" cy="106" r="14"/><path class="s d" d="M20 120h160"/>',
+  lander:'<path class="s f" d="M70 40h60l14 36H56z"/><path class="s" d="M62 76L38 112M138 76l24 36M100 76v36M30 112h18M152 112h18M92 112h16"/><path class="s" d="M100 40V14M90 14h20"/><circle class="s f" cx="100" cy="58" r="8"/><path class="s d" d="M20 120h160"/>',
+  heli:'<g class="rot"><path class="s" d="M20 40h160"/></g><path class="s" d="M100 40v14"/><rect class="s f" x="84" y="54" width="32" height="24" rx="5"/><path class="s" d="M84 78l-10 24M116 78l10 24M70 102h14M116 102h14"/><path class="s f" d="M78 30h44l6-12H72z"/><path class="s d" d="M20 120h160"/>',
+  array:'<rect class="s f" x="50" y="60" width="100" height="50" rx="4"/><g class="s"><circle cx="75" cy="85" r="10"/><circle cx="100" cy="85" r="10"/><circle cx="125" cy="85" r="10"/></g><path class="s d" d="M100 60V0"/><path class="s" d="M60 110l-12 8M140 110l12 8"/>',
+  probe:'<path class="s f" d="M62 42q38 30 76 0z"/><rect class="s f" x="86" y="56" width="28" height="24" rx="3"/><path class="s" d="M100 80v28M114 66h46M86 66H44"/><circle class="s f" cx="164" cy="66" r="5"/><path class="s d" d="M20 120h160"/>',
+  sat:'<circle class="s f" cx="100" cy="62" r="22"/><path class="s" d="M100 40V14M100 84v26M78 62H46M122 62h32M84 46L64 26M116 78l20 20"/><circle class="s" cx="100" cy="62" r="32"/><path class="s d" d="M20 120h160"/>',
+  disc:'<circle class="s f" cx="100" cy="62" r="38"/><circle class="s" cx="100" cy="62" r="24"/><circle class="s f" cx="100" cy="62" r="8"/><path class="s d" d="M62 62h76M100 24v76"/><path class="s d" d="M20 120h160"/>',
+  flag:'<path class="s" d="M68 20v92"/><rect class="s f" x="68" y="24" width="64" height="38"/><path class="s" d="M68 34h64M68 44h64M68 54h64"/><path class="s d" d="M20 120h160"/>'
+};
+
+const D={
+  moon:[
+    ['Eagle Descent Stage','lander','Apollo 11 · 1969','Sea of Tranquility','On the surface','Model','Apollo Lunar Module LM-5','Apollo 11’s lower stage served as a launch pad for the ascent stage. Carrying it home would have cost fuel the crew did not have, so it stayed with a plaque and instruments.','Apollo 11 landing site','I helped the very first humans land safely on the quiet, dusty Moon! While the astronauts flew home, I stayed behind in the Sea of Tranquility to guard their footprints, our shiny plaque, and peaceful memories forever.'],
+    ['Lunar Roving Vehicles ×3','rover','Apollo 15·16·17 · 1971–72','Apollo 15, 16, 17 sites','Parked on the surface','Model','Boeing/GM electric LRV','Folding electric buggies let crews explore miles from the lander (up to ~36 km on Apollo 17). Each was parked after its final drive so the return stage could carry moon rocks instead.','lunar roving vehicle','Zooming across bumpy lunar hills with brave astronauts was the greatest adventure ever! My electric wheels carried them far to collect special moon rocks. Now I rest quietly under the starry sky, proud of our big discoveries.'],
+    ['ALSEP Science Stations','array','Apollo 12–17 · 1969–72','Apollo 12–17 landing sites','Switched off 1977','Model','Apollo Lunar Surface Experiments Package','Nuclear-powered seismometers, magnetometers, and heat probes deployed by astronauts that sent lunar interior data back to Earth for years until NASA turned them off in 1977.','ALSEP Apollo','Astronauts set me up on the Moon so I could listen to moonquakes and measure lunar heat! For many years I sent secret science clues back to Earth until my long shift finally ended in 1977.'],
+    ['Laser Retroreflectors','array','Apollo 11·14·15 · 1969–71','Apollo 11, 14, 15 sites','Still in use','Model','Lunar Ranging Retroreflector (LRRR)','Passive mirror arrays left on the Moon. Observatories on Earth fire laser beams at them to measure the Earth–Moon distance and orbit to millimetre precision.','Apollo retroreflector','Even though my astronaut friends went home long ago, I am still wide awake! Whenever scientists on Earth shine a bright laser beam at me, my shiny mirrors bounce it right back so they can measure the stars.'],
+    ['Surveyor 3','lander','1967','Ocean of Storms','Silent, on the surface','Model','Surveyor robotic lander','A robotic scout that landed in 1967. Two years later, Apollo 12 astronauts walked right up to it and brought its camera home to study how materials age on the Moon.','Surveyor 3 Apollo 12','I landed in the Ocean of Storms all by myself and waited patiently in the quiet dust. Two years later, Apollo 12 astronauts walked right up to say hello and took my camera back to Earth!'],
+    ['Apollo Flags','flag','1969–72','Six Apollo landing sites','Standing or fallen','Model','US Lunar Flag Assembly','Left at all six crewed landing sites as a symbolic mark of human achievement rather than territory. Harsh solar radiation has likely bleached them white over the decades.','Apollo flag Moon','Astronauts planted us proudly at six landing sites to celebrate humanity’s giant leap! Even though the bright Sun has probably turned our colors snowy white, we still stand as a peaceful hello from Earth.'],
+    ['Fallen Astronaut','disc','Apollo 15 · 1971','Hadley Rille','On the surface','Model','8.5 cm aluminium sculpture & plaque','Placed on the lunar soil by the Apollo 15 crew to honour all astronauts and cosmonauts who gave their lives for space exploration—a quiet memorial rather than an instrument.','Apollo 15 Fallen Astronaut','I am a tiny metal sculpture resting gently in the lunar dust at Hadley Rille. Astronauts placed me here beside a plaque so the universe will always remember every brave explorer who dreamed of the stars.'],
+    ['Apollo 16 Family Photo','disc','Apollo 16 · 1972','Descartes Highlands','Exposed to the Moon','Model','Photograph in plastic sleeve','Astronaut Charles Duke left a wrapped portrait of himself, his wife, and his two sons on the lunar surface—a personal memento left behind purely for sentimental value.','Apollo 16 Charles Duke','Astronaut Charles Duke gently placed me on the Moon so his family could visit space too! On my back is a sweet message telling future explorers that we came from planet Earth in peace.']
+  ],
+  mars:[
+    ['Viking 1 and 2 Landers','lander','1976','Chryse & Utopia Planitia','Silent since 1980/82','Model','Viking Mars Landers','The first lander pair to successfully touch down and search for signs of life on Mars. They studied Martian weather and soil for years until power and radio contact ended.','Viking lander Mars','My twin and I were the very first landers to safely touch down on Mars and take clear pictures! We sniffed the red soil and watched the weather for years before drifting off to sleep.'],
+    ['Sojourner','rover','1997','Ares Vallis','Silent since 1997','Model','Pathfinder microrover','A toaster-sized six-wheeled rover that proved wheeled exploration on Mars was practical. It analyzed nearby rocks beside its Pathfinder base station until communications ended.','Sojourner rover','I was a tiny rover about the size of a microwave oven, and I proved robots could drive across Mars! I rolled around studying rocks named Barnacle Bill and Yogi before resting beside my lander.'],
+    ['Spirit and Opportunity','rover','2004–2019','Gusev Crater & Meridiani','Silent (2010 / 2018)','Model','Mars Exploration Rovers (MER)','Built for 90-day missions, both found strong evidence of ancient water. Spirit got stuck in soft sand in 2009; Opportunity explored for ~14 years until a 2018 global dust storm.','Mars Exploration Rover','Engineers built us for ninety days, yet we discovered clues of ancient Martian water and kept rolling for years! Soft sand trapped Spirit first, and a giant dust storm finally tucked Opportunity into a cozy sleep.'],
+    ['Phoenix','lander','2008','Vastitas Borealis','Silent since 2008','Model','Phoenix Mars Lander','Landed near the Martian north pole and dug trenches into icy soil to confirm water ice. As polar winter darkness arrived, sunlight faded and ended the mission within months.','Phoenix Mars lander','I landed near the chilly north pole of Mars and used my robotic scoop to dig up real water ice! When the long, dark polar winter arrived, I curled up peacefully beneath the Martian frost.'],
+    ['InSight','lander','2018–2022','Elysium Planitia','Silent since 2022','Model','InSight Mars Lander','Listened closely to Marsquakes with a sensitive seismometer to map the planet’s deep interior. Thick red dust gradually covered its solar panels until power ran out in 2022.','InSight lander','Instead of rolling around, I sat very still on the red plains and pressed my sensitive ear to the ground. I listened to secret rumbles and quakes inside Mars until dust covered my solar wings.'],
+    ['Ingenuity','heli','2021–2024','Jezero Crater','Grounded','Model','Mars Helicopter','A technology demonstration built for five test flights that soared 72 times—the first powered, controlled aircraft on another world—until rotor blade damage ended its flights in 2024.','Ingenuity helicopter','Everyone wondered if a tiny helicopter could fly in the thin Martian air, so I spun my blades fast and soared! I took seventy-two amazing flights above red craters before resting my wings on the ground.'],
+    ['Mars Sample Depot','array','2022–23','Jezero Crater','Waiting on surface','Model','Perseverance sample tubes','The Perseverance rover placed ten sealed titanium sample tubes on the ground at Three Forks as a backup depot, waiting for a future mission to collect and return them to Earth.','Perseverance sample depot','We are ten shiny metal tubes filled with special Martian rocks and dust, resting neatly on the ground! Perseverance left us here like treasure chests waiting for a future rocket to carry us home.']
+  ],
+  orbit:[
+    ['Apollo 10 “Snoopy”','lander','1969','Heliocentric (Solar) orbit','Orbiting the Sun','Model','Apollo LM-4 ascent stage','After flying within 15 km of the Moon in a dress rehearsal for Apollo 11, Snoopy’s ascent stage was fired into solar orbit rather than brought back—making it the only intact flown LM ascent stage still out there.','Apollo 10 Snoopy','Before Apollo 11 landed, I flew super close to the Moon in a big dress rehearsal! Afterward, astronauts sent me zooming out around the Sun, where I still travel like a tiny silver planet.'],
+    ['Vanguard 1','sat','1958','High Earth orbit','Orbiting, silent','Model','Vanguard satellite (16 cm)','Launched in March 1958, this grapefruit-sized aluminium sphere tested launch and tracking systems. Its radios fell silent in 1964, making it the oldest human-made object still orbiting Earth.','Vanguard 1','I am a tiny, shiny sphere no bigger than a grapefruit, launched way back in 1958! Even though my radio went quiet long ago, I am still circling Earth as the oldest satellite in space.'],
+    ['LAGEOS 1 and 2','sat','1976 & 1992','Medium Earth orbit','Orbiting (active targets)','Model','Laser Geodynamics Satellites','Heavy brass-and-aluminium spheres covered in 426 retroreflectors used to measure Earth’s shape and tectonic motion by laser. LAGEOS 1 carries a plaque designed by Carl Sagan showing Earth’s continents across millions of years.','LAGEOS satellite','We are heavy metal disco balls covered in hundreds of mirrors! Scientists bounce lasers off us to measure how Earth’s continents move, and we carry a special picture map for people millions of years ahead.'],
+    ['Tesla Roadster (Starman)','rover','2018','Heliocentric (Solar) orbit','Drifting in solar orbit','Model','SpaceX Falcon Heavy test payload','Not a NASA mission: launched as a dummy test payload on the inaugural Falcon Heavy flight in 2018, sending a red sports car and mannequin “Starman” on an elliptical orbit around the Sun.','Falcon Heavy Roadster','Instead of carrying heavy blocks of concrete on a test rocket, engineers launched me—a bright red car with a mannequin driver! Now I cruise silently around the Sun past the orbit of Mars.']
+  ],
+  deep:[
+    ['Pioneer 10 and 11','probe','1972–73','Heading out of solar system','Silent (1995 / 2003)','Model','Pioneer outer-planet probes','The first spacecraft to cross the asteroid belt and visit Jupiter (and Saturn for Pioneer 11). Each carries an engraved gold-anodized plaque showing human figures and Earth’s galactic address.','Pioneer 10','We were the first brave scouts to cross the rocky asteroid belt and snap close-up photos of giant Jupiter and Saturn! Now we glide quietly toward the stars carrying golden plaques with greetings from Earth.'],
+    ['Voyager 1 and 2','probe','1977','Interstellar space','Active','Model','Voyager interstellar probes','Launched in 1977 on a Grand Tour of the outer planets. Both crossed into interstellar space (2012 and 2018) and still send scientific data back from billions of kilometres away.','Voyager 1','We left Earth in 1977 to visit the giant outer planets and never stopped flying! Today we are the farthest human-made explorers, still whispering secrets back from the dark ocean between the stars.'],
+    ['Voyager Golden Records','disc','1977','Aboard Voyager 1 and 2','Travelling','Model','12-inch gold-plated copper disc','A time capsule of Earth mounted on both Voyagers, containing spoken greetings in 55 languages, music, natural sounds, and 115 encoded images—built to endure for hundreds of millions of years.','Voyager Golden Record','We are shiny golden records riding aboard the Voyager probes! Inside our grooves are whale songs, laughter, music, and pictures of Earth, ready to say hello if friendly aliens ever find us among the stars.'],
+    ['New Horizons','probe','2006','Kuiper Belt','Active','Model','New Horizons Kuiper Belt probe','Flew past Pluto and its moons in 2015 and explored Kuiper Belt object Arrokoth in 2019. Having completed its primary goals, it continues speeding outward through the distant Kuiper Belt.','New Horizons Pluto','I zoomed across the solar system to capture the very first close-up photos of icy Pluto and its heart-shaped plain! Now I keep flying deeper into the mysterious Kuiper Belt beyond Neptune.']
+  ]
+};
+
+let W='moon',cur=0;
+function rail(){
+  $('#rail').innerHTML=D[W].map((m,i)=>`
+    <div class="panel card tilt" data-i="${i}">
+      <small>0${i+1}</small>
+      <h4 class="card-title" style="cursor:pointer; color:var(--sky);" title="Click for a short story!">${m[0]}</h4>
+      <span>${m[2]}</span>
+      <div class="kid-story-box">${m[9]}</div>
+    </div>
+  `).join('');
+  $$('.card').forEach(c=>{
+    const idx = c.dataset.i;
+    c.onclick=(e)=>{ if(e.target.classList.contains('card-title')) return; show(+idx); };
+    c.querySelector('.card-title').onclick=(e)=>{
+      e.stopPropagation();
+      c.querySelector('.kid-story-box').classList.toggle('active');
+      show(+idx);
+    };
+    c.onpointermove=e=>{const r=c.getBoundingClientRect();c.style.setProperty('--ry',((e.clientX-r.left)/r.width-.5)*14+'deg');c.style.setProperty('--rx',-((e.clientY-r.top)/r.height-.5)*14+'deg')};
+    c.onpointerleave=()=>{c.style.setProperty('--rx','0');c.style.setProperty('--ry','0')};
+  });
+  show(0);
+}
+
+function show(i){
+  cur=i;const m=D[W][i],q=encodeURIComponent(m[8]);
+  $$('.card').forEach((c,j)=>c.classList.toggle('on',j==i));
+  $('#con').innerHTML=`<div class="bp"><svg viewBox="0 0 200 124">${T[m[1]]}</svg></div><div><div class="tag">${m[2]}</div><h3 class="con-title" style="cursor:pointer;" title="Click for a short story!">${m[0]}</h3><p class="con-desc" style="color:var(--mute);margin:8px 0;cursor:pointer;" title="Click for a short story!">${m[7]}</p>
+  <div class="kid-story-box" id="con-kid-story" style="margin-bottom:14px;">✨ <b>Short Story:</b> ${m[9]}</div>
+  <div class="spec"><div><small>Location</small><b>${m[3]}</b></div><div><small>Status</small><b>${m[4]}</b></div><div style="grid-column:span 2"><small>${m[5]}</small><b>${m[6]}</b></div></div>
+  <svg class="pulse" viewBox="0 0 400 46"><polyline points="0,23 40,23 55,6 70,40 85,23 130,23 150,10 165,36 180,23 240,23 400,23"/></svg>
+  <div class="links"><a href="https://images.nasa.gov/search?q=${q}&media=image" target="_blank" rel="noopener">PHOTOS ↗</a><a href="https://images.nasa.gov/search?q=${q}&media=video" target="_blank" rel="noopener">VIDEOS ↗</a></div></div>`;
+  const toggleConStory = () => $('#con-kid-story').classList.toggle('active');
+  $('#con .con-title').onclick = toggleConStory;
+  $('#con .con-desc').onclick = toggleConStory;
+}
+$$('.tabs button').forEach(b=>b.onclick=()=>{W=b.dataset.w;$$('.tabs button').forEach(x=>x.classList.toggle('on',x==b));rail()});
+rail();
+
+$('#tk').innerHTML=Array(2).fill(['PROJECT AFTERGLOW','APOLLO 11','LUNAR ROVERS','ALSEP','SURVEYOR 3','FALLEN ASTRONAUT','SNOOPY','VIKING','SOJOURNER','OPPORTUNITY','SPIRIT','PHOENIX','INSIGHT','INGENUITY','SAMPLE DEPOT','VANGUARD 1','LAGEOS','PIONEER 10 & 11','VOYAGER 1 & 2','GOLDEN RECORD','NEW HORIZONS'].map(x=>'◆ '+x).join('  ')).join('  ');
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');const b=e.target.querySelector('[data-n]');if(b&&!b.d){b.d=1;const n=+b.dataset.n;let t=0;const f=()=>{t+=1/50;b.textContent=Math.round(n*(1-Math.pow(1-Math.min(t,1),3)));t<1&&requestAnimationFrame(f)};f()}io.unobserve(e.target)}}),{threshold:.15});
+$$('.rv').forEach(e=>io.observe(e));
+addEventListener('scroll',()=>{const h=document.documentElement,p=scrollY/(h.scrollHeight-innerHeight);$('#prog').style.width=p*100+'%';const t=$('#tl').getBoundingClientRect();$('#tl').style.setProperty('--p',Math.max(0,Math.min(100,(innerHeight*.6-t.top)/t.height*100))+'%')},{passive:true});
+addEventListener('pointermove',e=>{const g=$('#glow');g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'});
+let s0=Date.now();setInterval(()=>{const s=Math.floor((Date.now()-s0)/1000),p=n=>String(n).padStart(2,'0');$('#met').textContent=`${p(s/3600|0)}:${p(s/60%60|0)}:${p(s%60)}`},1000);
+
+const cv=$('#stars'),cx=cv.getContext('2d');let mx=0,my=0,S=[];
+function rs(){cv.width=cv.offsetWidth*devicePixelRatio;cv.height=cv.offsetHeight*devicePixelRatio;S=Array.from({length:240},()=>({x:Math.random(),y:Math.random(),z:Math.random()*.9+.1,p:Math.random()*6}))}
+rs();addEventListener('resize',rs);
+(function f(t){cx.clearRect(0,0,cv.width,cv.height);S.forEach(s=>{const x=((s.x+mx*.03*s.z+1)%1)*cv.width,y=((s.y+my*.03*s.z+1)%1)*cv.height;cx.globalAlpha=.3+.7*Math.abs(Math.sin(t/900+s.p))*s.z;cx.fillStyle=s.z>.7?'#8fd8ff':'#fff';cx.beginPath();cx.arc(x,y,s.z*1.6*devicePixelRatio,0,7);cx.fill()});requestAnimationFrame(f)})(0);
+
+// Quiz Data
+const quizData = [
+  { q: "Why did Apollo crews leave cameras, tools, and lunar rovers on the Moon?", options: ["To build a lunar hotel", "To save return fuel so they could carry moon rocks home", "Because their cargo doors jammed"], answer: 1, info: "Every kilogram of moon rock brought back to Earth replaced a kilogram of gear left behind." },
+  { q: "Which human-made object launched in 1958 is the oldest satellite still in Earth orbit?", options: ["LAGEOS 1", "Surveyor 3", "Vanguard 1"], answer: 2, info: "Vanguard 1 is a 16 cm aluminium sphere launched in 1958; its radios went silent in 1964, but it still orbits Earth." },
+  { q: "What was the nickname of Apollo 10's lunar module ascent stage sent into solar orbit?", options: ["Snoopy", "Eagle", "Charlie"], answer: 0, info: "After a 1969 dress rehearsal near the Moon, Apollo 10's ascent stage 'Snoopy' was fired into heliocentric orbit." },
+  { q: "Where did Apollo 11's Eagle descent stage land on July 20, 1969?", options: ["Hadley Rille", "Ocean of Storms", "Sea of Tranquility"], answer: 2, info: "Eagle's descent stage stayed in the Sea of Tranquility as a launch pad for the ascent stage." },
+  { q: "How many electric Lunar Roving Vehicles (LRVs) were parked on the Moon during Apollo 15, 16, and 17?", options: ["Three", "One", "Six"], answer: 0, info: "Three folding Boeing/GM electric rovers were driven and parked at the Apollo 15, 16, and 17 sites." },
+  { q: "What was the longest distance driven by an Apollo Lunar Roving Vehicle?", options: ["About 5 km on Apollo 11", "About 36 km on Apollo 17", "About 120 km on Apollo 15"], answer: 1, info: "The Apollo 17 rover drove approximately 36 km across the lunar surface before being parked." },
+  { q: "What were the nuclear-powered science stations left at Apollo 12–17 landing sites called?", options: ["MET", "LAGEOS", "ALSEP"], answer: 2, info: "The Apollo Lunar Surface Experiments Package (ALSEP) sent data back until NASA switched it off in 1977." },
+  { q: "In what year did NASA switch off the ALSEP lunar science stations?", options: ["1995", "1977", "1969"], answer: 1, info: "ALSEP seismometers, magnetometers, and heat probes operated for years until being switched off in 1977." },
+  { q: "How do the Apollo 11, 14, and 15 Laser Retroreflectors help scientists today?", options: ["They broadcast live TV from the Moon", "They power lunar rovers", "They bounce Earth laser beams back to measure the Moon's distance"], answer: 2, info: "Earth observatories fire lasers at these passive mirror arrays to measure the Earth–Moon distance to millimetre precision." },
+  { q: "Which robotic lander in the Ocean of Storms was visited by Apollo 12 astronauts in 1969?", options: ["Viking 1", "Surveyor 3", "Phoenix"], answer: 1, info: "Surveyor 3 landed in 1967; two years later, Apollo 12 astronauts walked to it and brought its camera home." },
+  { q: "What has likely happened to the six US flags planted on the Moon over the decades?", options: ["Lunar wind blew them into orbit", "Harsh sunlight has bleached them white", "They turned bright green"], answer: 1, info: "Decades of unfiltered solar radiation have likely bleached the nylon flags completely white." },
+  { q: "What is 'Fallen Astronaut', left at Hadley Rille during Apollo 15?", options: ["A broken spacesuit helmet", "A spare rover wheel", "An 8.5 cm aluminium memorial sculpture and plaque"], answer: 2, info: "Left by the Apollo 15 crew in 1971 to honour astronauts and cosmonauts who died in space exploration." },
+  { q: "Which Apollo 16 astronaut left a wrapped family photograph in the Descartes Highlands?", options: ["Charles Duke", "Gene Cernan", "Neil Armstrong"], answer: 0, info: "In 1972, Charles Duke left a plastic-sleeved portrait of himself, his wife, and their two sons on the Moon." },
+  { q: "Which pair of NASA landers touched down on Mars in 1976 to search for signs of life?", options: ["Viking 1 and 2", "Spirit and Opportunity", "Pioneer 10 and 11"], answer: 0, info: "Viking 1 and 2 landed in Chryse and Utopia Planitia in 1976 and operated until 1980 and 1982." },
+  { q: "What was the name of the toaster-sized microrover that explored Mars in 1997?", options: ["Curiosity", "Sojourner", "Ingenuity"], answer: 1, info: "Part of Mars Pathfinder, Sojourner proved in 1997 that wheeled robotic exploration on Mars was practical." },
+  { q: "How long were Spirit and Opportunity originally built to work on Mars?", options: ["5 years", "14 years", "90 days"], answer: 2, info: "Both Mars Exploration Rovers were designed for 90-day missions, yet Opportunity lasted roughly 14 years." },
+  { q: "What ended Opportunity's ~14-year mission on Mars in 2018?", options: ["A crater collision", "Running out of rocket fuel", "A global dust storm"], answer: 2, info: "A massive planet-wide dust storm blocked sunlight to Opportunity's solar panels in 2018." },
+  { q: "What happened to Opportunity's twin rover, Spirit, in 2009?", options: ["It landed in an ocean", "It flew back to Earth", "It got stuck in soft Martian sand"], answer: 2, info: "Spirit became trapped in soft sand at Gusev Crater in 2009 and sent its final signal in March 2010." },
+  { q: "What did the Phoenix lander confirm by digging into soil near Mars's north pole in 2008?", options: ["Water ice", "Underground forests", "Liquid gold"], answer: 0, info: "Phoenix dug into Vastitas Borealis soil to confirm water ice before polar winter darkness ended its mission." },
+  { q: "How did the InSight lander study the deep interior of Mars between 2018 and 2022?", options: ["By listening to Marsquakes with a seismometer", "By flying above volcanoes", "By drilling to the planet's core"], answer: 0, info: "InSight recorded Marsquakes at Elysium Planitia until dust covered its solar panels in 2022." },
+  { q: "How many flights did the Ingenuity helicopter complete on Mars before retiring in 2024?", options: ["5 flights", "140 flights", "72 flights"], answer: 2, info: "Built for just five test flights, Ingenuity completed 72 powered flights at Jezero Crater before rotor damage." },
+  { q: "Why did Perseverance place ten sealed sample tubes on the ground at Jezero Crater?", options: ["To dispose of used batteries", "To mark a landing runway", "As a backup Mars sample depot for future return missions"], answer: 2, info: "The 2022–23 sample depot acts as a backup cache in case future missions can collect and return them to Earth." },
+  { q: "How many retroreflector mirrors cover each LAGEOS satellite in Medium Earth orbit?", options: ["1,000 mirrors", "12 mirrors", "426 mirrors"], answer: 2, info: "LAGEOS 1 (1976) and LAGEOS 2 (1992) are covered in 426 retroreflectors to measure Earth's shape and motion." },
+  { q: "What special message is mounted aboard LAGEOS 1 for the far future?", options: ["A live radio beacon", "A plaque showing Earth's continents across millions of years", "A jar of moon dust"], answer: 1, info: "Designed by Carl Sagan, the plaque illustrates Earth's continental drift in the past, present, and distant future." },
+  { q: "Which spacecraft were the first to cross the asteroid belt and visit Jupiter?", options: ["Voyager 1 and 2", "Pioneer 10 and 11", "Apollo 10 and 11"], answer: 1, info: "Launched in 1972–73, Pioneer 10 and 11 crossed the asteroid belt and carry engraved plaques showing humans." },
+  { q: "When did Voyager 1 and Voyager 2 cross into interstellar space?", options: ["1999 and 2001", "2012 and 2018", "1977 and 1980"], answer: 1, info: "Launched in 1977, Voyager 1 entered interstellar space in 2012 and Voyager 2 followed in 2018." },
+  { q: "What is carried aboard both Voyager 1 and Voyager 2 as a message from Earth?", options: ["An Apollo Lunar Roving Vehicle", "A Viking lander", "The Voyager Golden Records"], answer: 2, info: "Each 12-inch gold-plated copper disc holds greetings in 55 languages, music, sounds, and 115 images of Earth." },
+  { q: "How many languages are featured in the spoken greetings on the Voyager Golden Records?", options: ["200 languages", "5 languages", "55 languages"], answer: 2, info: "The Golden Records preserve spoken greetings in 55 human languages alongside music and natural Earth sounds." },
+  { q: "Which probe flew past Pluto in 2015 and continues outward through the Kuiper Belt?", options: ["InSight", "Surveyor 3", "New Horizons"], answer: 2, info: "Launched in 2006, New Horizons explored Pluto in 2015 and Kuiper Belt object Arrokoth in 2019." },
+  { q: "Which non-NASA object was launched into solar orbit on a 2018 Falcon Heavy test flight?", options: ["Tesla Roadster (Starman)", "Snoopy", "Vanguard 1"], answer: 0, info: "Launched as a demonstration test payload in February 2018, the red Roadster drifts in heliocentric orbit." }
+];
+
+let currentQuiz = 0;
+let userAnswers = Array(quizData.length).fill(null);
+
+function updateScore() {
+  const correctCount = userAnswers.reduce((acc, ans, idx) => acc + (ans === quizData[idx].answer ? 1 : 0), 0);
+  const answeredCount = userAnswers.filter(x => x !== null).length;
+  $('#quiz-score').textContent = `Score: ${correctCount} / ${quizData.length} (${answeredCount} answered)`;
+}
+
+function loadQuiz() {
+  const qObj = quizData[currentQuiz];
+  const chosen = userAnswers[currentQuiz];
+  $('#quiz-question').textContent = `${currentQuiz + 1}/${quizData.length} — ${qObj.q}`;
+  const optRow = $('#quiz-options');
+  optRow.innerHTML = '';
+
+  qObj.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+    if (chosen !== null) {
+      if (idx === qObj.answer) btn.classList.add('good');
+      else if (idx === chosen) btn.classList.add('bad');
+    }
+    btn.onclick = () => { userAnswers[currentQuiz] = idx; loadQuiz(); };
+    optRow.appendChild(btn);
+  });
+
+  const resBox = $('#quiz-result');
+  if (chosen === null) {
+    resBox.textContent = 'Select one of the options above to answer.';
+  } else if (chosen === qObj.answer) {
+    resBox.innerHTML = `✨ <b>Correct!</b> ${qObj.info}`;
+  } else {
+    resBox.innerHTML = `❌ <b>Not quite.</b> The correct answer is <b>${qObj.options[qObj.answer]}</b>. ${qObj.info}`;
+  }
+  $('#q-prev').disabled = currentQuiz === 0;
+  $('#q-next').textContent = currentQuiz === quizData.length - 1 ? 'First Question ↺' : 'Next →';
+  updateScore();
+}
+
+$('#q-prev').onclick = () => { if (currentQuiz > 0) { currentQuiz--; loadQuiz(); } };
+$('#q-next').onclick = () => { currentQuiz = (currentQuiz + 1) % quizData.length; loadQuiz(); };
+$('#q-reset').onclick = () => { userAnswers = Array(quizData.length).fill(null); currentQuiz = 0; loadQuiz(); };
+loadQuiz();
+
+// Memory Match Script
+let a=null,lk=0,mv=0,lf=0;
+function game(){
+  const em=['🚙','🤖','🚁','📡','🚀','📷'],c=[...em,...em].sort(()=>Math.random()-.5);
+  mv=0;lf=6;a=null;lk=0;$('#mv').textContent=0;$('#mem').innerHTML='';
+  c.forEach(v=>{
+    const b=document.createElement('button');b.className='mc';b.innerHTML=`<span class="fr">◇</span><span class="bk">${v}</span>`;b.dataset.v=v;
+    b.onclick=()=>{if(lk||b.classList.contains('up')||b.classList.contains('ok'))return;b.classList.add('up');if(!a){a=b;return}
+    mv++;$('#mv').textContent=mv;if(a.dataset.v==v){a.className=b.className='mc ok';a=null;if(!--lf)$('#mv').textContent=mv+' — Complete!'}
+    else{lk=1;const f=a;a=null;setTimeout(()=>{f.classList.remove('up');b.classList.remove('up');lk=0},800)}};
+    $('#mem').appendChild(b);
+  });
+}
+$('#rs').onclick=game;game();
+
+// Space Satellite Orijinal Oyun Scripti (Mobil ve Opera GX / iOS Uyumlu)
+class SpaceAudio {
+    constructor() {
+        this.ctx = null;
+        this.isMuted = localStorage.getItem('spaceSatMuted') === 'true';
+    }
+    init() {
+        if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume().catch(() => {});
+        }
+    }
+    toggleMute() {
+        this.isMuted = !this.isMuted;
+        localStorage.setItem('spaceSatMuted', this.isMuted);
+        return this.isMuted;
+    }
+    playThrust() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(160, now);
+            osc.frequency.exponentialRampToValueAtTime(420, now + 0.12);
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+            osc.connect(gain); gain.connect(this.ctx.destination);
+            osc.start(now); osc.stop(now + 0.15);
+        } catch(e) {}
+    }
+    playScore() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(587.33, now);
+            osc.frequency.setValueAtTime(880, now + 0.08);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            osc.connect(gain); gain.connect(this.ctx.destination);
+            osc.start(now); osc.stop(now + 0.32);
+        } catch(e) {}
+    }
+    playCrash() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(110, now);
+            osc.frequency.exponentialRampToValueAtTime(28, now + 0.45);
+            oscGain.gain.setValueAtTime(0.3, now);
+            oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+            osc.connect(oscGain); oscGain.connect(this.ctx.destination);
+            osc.start(now); osc.stop(now + 0.5);
+        } catch(e) {}
+    }
+}
+
+const canvas = $('#gameCanvas');
+const ctx = canvas.getContext('2d');
+const startScreen = $('#startScreen');
+const gameOverScreen = $('#gameOverScreen');
+const liveScoreContainer = $('#liveScoreContainer');
+const liveScoreEl = $('#liveScore');
+const hudBestScoreBadge = $('#hudBestScoreBadge');
+const finalScoreEl = $('#finalScore');
+const finalBestScoreEl = $('#finalBestScore');
+const newRecordBadge = $('#newRecordBadge');
+const startBtn = $('#startBtn');
+const restartBtn = $('#restartBtn');
+const soundToggleBtn = $('#soundToggleBtn');
+const soundOnIcon = $('#soundOnIcon');
+const soundOffIcon = $('#soundOffIcon');
+
+const audio = new SpaceAudio();
+function updateSoundUI() {
+    if (audio.isMuted) {
+        soundOnIcon.classList.add('hidden');
+        soundOffIcon.classList.remove('hidden');
+    } else {
+        soundOnIcon.classList.remove('hidden');
+        soundOffIcon.classList.add('hidden');
+    }
+}
+updateSoundUI();
+soundToggleBtn.addEventListener('click', (e) => { e.stopPropagation(); audio.toggleMute(); updateSoundUI(); });
+
+let gameState = 'START';
+let score = 0;
+let bestScore = parseInt(localStorage.getItem('spaceSatBestScore')) || 0;
+hudBestScoreBadge.textContent = bestScore;
+
+let width = 600, height = 520;
+function resizeCanvas() {
+    const parent = canvas.parentElement;
+    if (!parent) return;
+    width = parent.clientWidth || 600;
+    height = parent.clientHeight || 520;
+    
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const stars = [];
+for (let i = 0; i < 100; i++) {
+    stars.push({ x: Math.random() * width, y: Math.random() * height, size: Math.random() * 1.5 + 0.5, speed: Math.random() * 0.4 + 0.1, alpha: Math.random() * 0.7 + 0.3 });
+}
+
+const satellite = {
+    x: 120, y: 260, radius: 20, velocity: 0, gravity: 0.42, jumpStrength: -7.8, rotation: 0, thrustTimer: 0,
+    reset() { this.x = Math.min(width * 0.25, 150); this.y = height * 0.5; this.velocity = 0; this.rotation = 0; this.thrustTimer = 0; },
+    flap() { this.velocity = this.jumpStrength; this.thrustTimer = 14; audio.playThrust(); spawnThrustParticles(this.x - 16, this.y + 6); },
+    update() {
+        if (gameState === 'START') {
+            this.y = height * 0.5 + Math.sin(Date.now() * 0.004) * 12;
+            this.rotation = Math.sin(Date.now() * 0.003) * 0.06;
+            return;
+        }
+        if (gameState === 'PLAYING') {
+            this.velocity += this.gravity;
+            if (this.velocity > 11) this.velocity = 11;
+            this.y += this.velocity;
+            this.rotation += ((Math.max(-0.45, Math.min(0.65, this.velocity * 0.065))) - this.rotation) * 0.15;
+            if (this.thrustTimer > 0) this.thrustTimer--;
+            if (this.y - this.radius < 0) { this.y = this.radius; this.velocity = 0; }
+            if (this.y + this.radius > height) { this.y = height - this.radius; triggerGameOver(); }
+        }
+    },
+    draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+
+        ctx.fillStyle = '#1e3a8a'; ctx.strokeStyle = '#60a5fa'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); 
+        if (ctx.roundRect) ctx.roundRect(-10, -34, 20, 14, 2); 
+        else ctx.rect(-10, -34, 20, 14);
+        ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = '#1d4ed8'; ctx.strokeStyle = '#93c5fd'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); 
+        if (ctx.roundRect) ctx.roundRect(-10, 20, 20, 14, 2); 
+        else ctx.rect(-10, 20, 20, 14);
+        ctx.fill(); ctx.stroke();
+
+        const bodyGrad = ctx.createLinearGradient(-14, -14, 14, 14);
+        bodyGrad.addColorStop(0, '#f8fafc'); bodyGrad.addColorStop(0.5, '#cbd5e1'); bodyGrad.addColorStop(1, '#64748b');
+        ctx.fillStyle = bodyGrad; ctx.strokeStyle = '#334155'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); 
+        if (ctx.roundRect) ctx.roundRect(-15, -14, 30, 28, 6); 
+        else ctx.rect(-15, -14, 30, 28);
+        ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = '#f59e0b'; ctx.fillRect(-6, -13, 12, 26);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath(); ctx.arc(9, 0, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(9.5, -0.5, 2.5, 0, Math.PI * 2); ctx.fill();
+
+        ctx.restore();
+    }
+};
+
+const particles = [];
+function spawnThrustParticles(x, y) {
+    for (let i = 0; i < 5; i++) {
+        particles.push({ x, y, vx: -Math.random() * 3 - 1, vy: (Math.random() - 0.5) * 2, size: Math.random() * 2.5 + 1, alpha: 1, decay: 0.04 });
+    }
+}
+function spawnExplosionParticles(x, y) {
+    for (let i = 0; i < 35; i++) {
+        const angle = Math.random() * Math.PI * 2, speed = Math.random() * 6 + 1;
+        particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, size: Math.random() * 3.5 + 1, alpha: 1, decay: 0.02 });
+    }
+}
+
+const meteorColumns = [];
+const METEOR_WIDTH = 72;
+let frameCount = 0;
+
+function createSingleRock(radius) {
+    const vertices = [];
+    for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const r = radius * (0.8 + Math.random() * 0.3);
+        vertices.push({ x: Math.cos(angle) * r, y: Math.sin(angle) * r });
+    }
+    return { radius, vertices, rotation: Math.random() * Math.PI, rotSpeed: (Math.random() - 0.5) * 0.02, shade: Math.random() > 0.5 ? '#94a3b8' : '#78716c' };
+}
+
+function spawnMeteorColumn() {
+    const gap = 165;
+    const topHeight = Math.floor(Math.random() * (height - gap - 120)) + 60;
+    const bottomY = topHeight + gap;
+    const rockR = METEOR_WIDTH * 0.45;
+
+    const topRocks = [];
+    for (let y = topHeight - rockR; y > -rockR; y -= rockR * 1.3) {
+        topRocks.push({ offsetY: y, offsetX: (Math.random() - 0.5) * 8, rock: createSingleRock(rockR) });
+    }
+    const bottomRocks = [];
+    for (let y = bottomY + rockR; y < height + rockR; y += rockR * 1.3) {
+        bottomRocks.push({ offsetY: y, offsetX: (Math.random() - 0.5) * 8, rock: createSingleRock(rockR) });
+    }
+
+    meteorColumns.push({ x: width + METEOR_WIDTH, topHeight, bottomY, passed: false, topRocks, bottomRocks });
+}
+
+function drawSingleRock(x, y, rock) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rock.rotation);
+    ctx.fillStyle = rock.shade; ctx.strokeStyle = '#334155'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    rock.vertices.forEach((v, idx) => { idx === 0 ? ctx.moveTo(v.x, v.y) : ctx.lineTo(v.x, v.y); });
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.restore();
+}
+
+function updateAndDrawMeteors() {
+    if (gameState === 'PLAYING') {
+        frameCount++;
+        if (frameCount % 110 === 0) spawnMeteorColumn();
+    }
+    const speed = 3.5 + Math.min(2.2, score * 0.035);
+    for (let i = meteorColumns.length - 1; i >= 0; i--) {
+        const col = meteorColumns[i];
+        if (gameState === 'PLAYING') col.x -= speed;
+
+        col.topRocks.forEach(item => {
+            if (gameState === 'PLAYING') item.rock.rotation += item.rock.rotSpeed;
+            drawSingleRock(col.x + item.offsetX, item.offsetY, item.rock);
+        });
+        col.bottomRocks.forEach(item => {
+            if (gameState === 'PLAYING') item.rock.rotation += item.rock.rotSpeed;
+            drawSingleRock(col.x + item.offsetX, item.offsetY, item.rock);
+        });
+
+        if (gameState === 'PLAYING' && !col.passed && col.x < satellite.x) {
+            col.passed = true;
+            score++;
+            liveScoreEl.textContent = score;
+            audio.playScore();
+        }
+
+        if (gameState === 'PLAYING') {
+            const hitR = satellite.radius * 0.8;
+            if (satellite.x + hitR > col.x - METEOR_WIDTH/2 && satellite.x - hitR < col.x + METEOR_WIDTH/2) {
+                if (satellite.y - hitR < col.topHeight || satellite.y + hitR > col.bottomY) {
+                    triggerGameOver();
+                }
+            }
+        }
+        if (col.x < -100) meteorColumns.splice(i, 1);
+    }
+}
+
+function startGame() {
+    audio.init();
+    gameState = 'PLAYING';
+    score = 0; frameCount = 0;
+    meteorColumns.length = 0; particles.length = 0;
+    satellite.reset(); satellite.flap();
+    liveScoreEl.textContent = '0';
+    startScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    liveScoreContainer.classList.remove('hidden');
+    liveScoreContainer.classList.add('flex');
+}
+
+function triggerGameOver() {
+    if (gameState === 'GAMEOVER') return;
+    gameState = 'GAMEOVER';
+    audio.playCrash();
+    spawnExplosionParticles(satellite.x, satellite.y);
+    let isNew = false;
+    if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem('spaceSatBestScore', bestScore);
+        hudBestScoreBadge.textContent = bestScore;
+        isNew = true;
+    }
+    finalScoreEl.textContent = score;
+    finalBestScoreEl.textContent = bestScore;
+    if (isNew && score > 0) newRecordBadge.classList.remove('hidden');
+    else newRecordBadge.classList.add('hidden');
+    liveScoreContainer.classList.add('hidden');
+    liveScoreContainer.classList.remove('flex');
+    setTimeout(() => gameOverScreen.classList.remove('hidden'), 400);
+}
+
+function handleInput(e) {
+    if (e) e.preventDefault();
+    audio.init();
+    if (gameState === 'PLAYING') {
+        satellite.flap();
+    } else if (gameState === 'START') {
+        startGame();
+    }
+}
+
+canvas.addEventListener('pointerdown', handleInput);
+startBtn.addEventListener('click', (e) => { e.preventDefault(); startGame(); });
+restartBtn.addEventListener('click', (e) => { e.preventDefault(); startGame(); });
+
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp') {
+        e.preventDefault();
+        if (gameState === 'PLAYING') satellite.flap();
+        else if (gameState === 'START') startGame();
+        else if (gameState === 'GAMEOVER' && !gameOverScreen.classList.contains('hidden')) startGame();
+    }
+});
+
+function gameLoop() {
+    ctx.fillStyle = '#050714';
+    ctx.fillRect(0, 0, width, height);
+
+    stars.forEach(s => {
+        if (gameState === 'PLAYING') {
+            s.x -= s.speed;
+            if (s.x < 0) s.x = width;
+        }
+        ctx.fillStyle = '#94a3b8';
+        ctx.globalAlpha = s.alpha;
+        ctx.fillRect(s.x, s.y, s.size, s.size);
+    });
+    ctx.globalAlpha = 1;
+
+    updateAndDrawMeteors();
+
+    if (gameState !== 'GAMEOVER') {
+        satellite.update();
+        satellite.draw();
+    }
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+        if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+window.addEventListener('load', () => {
+    resizeCanvas();
+    satellite.reset();
+    gameLoop();
+});
+</script>
+</body>
+</html>
